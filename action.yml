@@ -21,7 +21,7 @@ outputs:
     description: Unity version changeset.
 runs:
   using: "node12"
-  main: "index.js"
+  main: "scripts/index.js"
 branding:
   icon: box
   color: gray-dark
