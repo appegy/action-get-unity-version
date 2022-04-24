@@ -3,7 +3,7 @@ const os = require('os');
 const path = require('path');
 
 try {
-  execSync(path.join(__dirname, 'scripts/run-action.ps1'), { stdio: 'inherit', shell: "pwsh" });
+  execSync(path.join(__dirname, 'run-action.ps1'), { stdio: 'inherit', shell: "pwsh" });
 } 
 catch(err) {
   process.exitCode = 1;
