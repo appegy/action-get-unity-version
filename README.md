@@ -1,28 +1,45 @@
-# .Net Action Template
-This repo is a template you can use to write your own custom GitHub Action using .Net/C#.
+# unity-version
 
-You can see an example of an action created using this template here: [send-workflow-notifications](https://github.com/OctoGeeks/send-workflow-notifications)
+GitHub Action that returns unity version in specific folder.
 
-# Why this and not a docker-based action
-The standard advice is if you want to write an action in a language other than the few with built-in support, is to use a docker-based action, where you can install all the runtime dependencies your language/tech stack requires.
+## Inputs
 
-For a .Net based action you could certainly go docker-based, but this repo uses a different approach that doesn't involve docker. Because you can compile a .Net app into a self-contained binary, you can run it without docker and not impose any dependencies on the consumers of your action. Simply include the binaries in the repo, and invoke them directly from the action manifest.
+### `project_path`
 
-The has a few potential benefits vs a docker-based .Net action:
+Path to Unity project. Used to find Unity version. Default `${{ github.workspace }}`.
 
-1. No need to include the extra complexity of docker. If you use docker often this may not be a big deal, but if you're not familiar with docker this may be a large benefit.
+### `version_env`
 
-2. Sometimes people use self-hosted runners that don't have docker available in their environment, and can't use docker based actions.
+The name of environment variable to store the version. Keep empty if you don't want to store it.
 
-3. Docker-based actions can only run on linux-based runners, whereas a .Net self-contained app can be run on linux + windows + mac.
+### `changeset_env`
 
-# How to use this repo
+The name of environment variable to store the changeset. Keep empty if you don't want to store it.
 
-1. Click the Use This Template button to create your own repo as a copy of this (similar to forking, but doesn't have a fork relationship back to the original repo).
-2. Modify the action.yml to give your action a name/description, and setup any inputs you need.
-3. Modify the code in the src folder to do whatever you want your custom action to do, this is a .Net 5 Console App (C#).
-4. Use the [DotNetActionsToolkit NuGet package](https://www.nuget.org/packages/DotnetActionsToolkit/) (already included in the sample project) to interact with the the GitHub Actions environment. This is a port of the [actions/toolkit](https://github.com/actions/toolkit) npm packages that are used when developing javascript/typescript based actions. The goal was to make developing a .Net based action as similar an experience as possible to developing a JavaScript based action. You will use this NuGet package to get workflow inputs, set outputs, log info/warnings/errors, etc.
-5. Modify the build.ps1 file in the root of the repo to use the proper path/name to your sln file.
-6. Modify the run-action.ps1 file in the root of the repo to use the proper path/name of your binaries.
-7. Run build.ps1 to build a windows + linux + mac version of your action, and be sure to commit the resulting binaries along with your code changes.
-8. Modify .github/workflows/testing-action/action.yml to test your action.
+## Outpust
+
+### `version`
+
+Unity version.
+
+### `changeset`
+
+Unity version changeset
+
+## Example usage
+
+```yaml
+- name: Checkout project
+  uses: actions/checkout@v2
+
+- name: Get Unity version
+  id: unity-version
+  uses: appegy/action-get-unity-version@v1   
+
+- name: Show unity version
+  run: |
+    echo "[Env] Version = $UNITY_VERSION"
+    echo "[Env] Changeset = $UNITY_VERSION_CHANGESET"
+    echo "Version = ${{ steps.unity-version.outputs.unity-version }}"
+    echo "Changeset = ${{ steps.unity-version.outputs.unity-version-changeset }}"
+```
