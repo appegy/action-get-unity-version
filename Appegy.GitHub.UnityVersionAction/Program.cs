@@ -16,20 +16,29 @@ namespace Appegy.GitHub.UnityVersionAction
                 var input = GetInputs();
                 var version = FindUnityVersion(input.ProjectPath);
 
-                _core.Info($"{nameof(version.Version)}: {version.Version}");
-                _core.Info($"{nameof(version.Changeset)}: {version.Changeset}");
-                _core.SetOutput("version", version.Version);
-                _core.SetOutput("changeset", version.Changeset);
+                _core.Info("Settings outputs...");
 
-                if (!string.IsNullOrEmpty(input.VersionEnv))
+                if (string.IsNullOrEmpty(input.VersionEnv))
                 {
-                    _core.Info($"Setting environment variable {input.VersionEnv} to {version.Version}");
+                    _core.Info($"{nameof(version.Version)}: {version.Version}");
+                    _core.SetOutput("version", version.Version);
+                }
+                else
+                {
+                    _core.Info($"{nameof(version.Version)}: {version.Version}. Export as environment variable {input.VersionEnv})");
+                    _core.SetOutput("version", version.Version);
                     _core.ExportVariable(input.VersionEnv, version.Version);
                 }
 
-                if (!string.IsNullOrEmpty(input.ChangesetEnv))
+                if (string.IsNullOrEmpty(input.ChangesetEnv))
                 {
-                    _core.Info($"Setting environment variable {input.ChangesetEnv} to {version.Changeset}");
+                    _core.Info($"{nameof(version.Changeset)}: {version.Changeset}");
+                    _core.SetOutput("changeset", version.Changeset);
+                }
+                else
+                {
+                    _core.Info($"{nameof(version.Changeset)}: {version.Changeset}. Export as environment variable {input.ChangesetEnv})");
+                    _core.SetOutput("changeset", version.Changeset);
                     _core.ExportVariable(input.ChangesetEnv, version.Changeset);
                 }
             }
